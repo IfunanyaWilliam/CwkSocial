@@ -22,7 +22,7 @@ namespace CwkSocial.Api.Extensions
                 registrar.RegisterPipelineComponents(app);
             }
         }
-
+          
         private static IEnumerable<T> GetRegistrars<T>(Type scanningType) where T : IRegistrar
         {
             return scanningType.Assembly.GetTypes()
