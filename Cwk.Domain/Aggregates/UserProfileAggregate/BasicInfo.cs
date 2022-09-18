@@ -30,7 +30,8 @@ namespace Cwk.Domain.Aggregates.UserProfileAggregate
                 LastName     = lastName,
                 EmailAddress = emailAddress,
                 Phone        = phone,
-                DateOfBirth  = dateOfBirth
+                DateOfBirth  = dateOfBirth,
+                CurrentCity = currentCity
             };
         }
     }

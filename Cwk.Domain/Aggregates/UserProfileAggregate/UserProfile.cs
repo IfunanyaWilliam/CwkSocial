@@ -25,16 +25,16 @@ namespace Cwk.Domain.Aggregates.UserProfileAggregate
 
             return new UserProfile
             {
-                IdentityId = identityId,
-                BasicInfo = basicInfo,
-                DateCreated = DateTime.UtcNow,
+                IdentityId   = identityId,
+                BasicInfo    = basicInfo,
+                DateCreated  = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow
             };
         }
 
         public void UpdateBasicInfo(BasicInfo newInfo)
         {
-            BasicInfo = newInfo;
+            BasicInfo    = newInfo;
             LastModified = DateTime.UtcNow;
         }
     }
