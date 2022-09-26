@@ -3,13 +3,13 @@
 namespace CwkSocial.Api.Controllers.V1
 {
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route(ApiRoutes.BaseRoute)]
     [ApiController]
     public class PostsController : Controller
     {
 
         [HttpGet]
-        [Route("{id}")]
+        [Route(ApiRoutes.Posts.GetById)]
         public IActionResult GetById(int id)
         {
             return Ok("Hello! From V1");
