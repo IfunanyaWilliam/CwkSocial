@@ -16,6 +16,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,4 +25,24 @@
     <ProjectReference Include="..\CwkSocail.Dal\CwkSocial.Dal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="MediatR.Extensions.Microsoft.DependencyInjection" />
+    <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+    <None Remove="Contracts\" />
+    <None Remove="Contracts\Posts\" />
+    <None Remove="Contracts\UserProfile\" />
+    <None Remove="Contracts\UserProfile\Requests\" />
+    <None Remove="Contracts\UserProfile\Responses\" />
+    <None Remove="Contracts\Posts\Requests\" />
+    <None Remove="Contracts\Posts\Responses\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Contracts\" />
+    <Folder Include="Contracts\Posts\" />
+    <Folder Include="Contracts\UserProfile\" />
+    <Folder Include="Contracts\UserProfile\Requests\" />
+    <Folder Include="Contracts\UserProfile\Responses\" />
+    <Folder Include="Contracts\Posts\Requests\" />
+    <Folder Include="Contracts\Posts\Responses\" />
+  </ItemGroup>
 </Project>
