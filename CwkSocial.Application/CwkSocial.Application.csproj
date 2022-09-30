@@ -9,7 +9,6 @@
   <ItemGroup>
     <None Remove="MediatR" />
     <None Remove="AutoMapper" />
-    <None Remove="UserProfile\" />
     <None Remove="UserProfile\Commands\" />
     <None Remove="UserProfile\Queries\" />
     <None Remove="UserProfile\CommandHandlers\" />
@@ -25,15 +24,17 @@
     <PackageReference Include="AutoMapper" Version="11.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="UserProfile\" />
-    <Folder Include="UserProfile\Commands\" />
-    <Folder Include="UserProfile\Queries\" />
-    <Folder Include="UserProfile\CommandHandlers\" />
-    <Folder Include="UserProfile\QueryHandlers\" />
+    <Folder Include="UserProfiles\Commands\" />
+    <Folder Include="UserProfiles\Queries\" />
+    <Folder Include="UserProfiles\CommandHandlers\" />
+    <Folder Include="UserProfiles\QueryHandlers\" />
     <Folder Include="Posts\" />
     <Folder Include="Posts\Command\" />
     <Folder Include="Posts\CommandHandlers\" />
     <Folder Include="Posts\Queries\" />
     <Folder Include="Posts\QueryHandlers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cwk.Domain\Cwk.Domain.csproj" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CwkSocial.Api.Contracts.UserProfile.Requests;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 namespace CwkSocial.Api.Controllers.V1
 {
 
@@ -7,8 +9,24 @@ namespace CwkSocial.Api.Controllers.V1
     [ApiController]
     public class UserProfileController : Controller
     {
-        public UserProfileController()
+        private readonly IMediator _mediator;
+
+        public UserProfileController(IMediator mediator)
         {
+            _mediator = mediator;
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllProfiles()
+        {
+            return (IActionResult)Task.FromResult(Ok());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUserProfileCreate([FromBody] UserProfileCreate profile)
+        {
+            return (IActionResult)Task.FromResult(Ok());
         }
     }
 }
