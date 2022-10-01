@@ -23,6 +23,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Cwk.Domain\Cwk.Domain.csproj" />
     <ProjectReference Include="..\CwkSocail.Dal\CwkSocial.Dal.csproj" />
+    <ProjectReference Include="..\CwkSocial.Application\CwkSocial.Application.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +38,7 @@
     <None Remove="Contracts\UserProfile\Responses\" />
     <None Remove="Contracts\Posts\Requests\" />
     <None Remove="Contracts\Posts\Responses\" />
+    <None Remove="MappingProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Contracts\" />
@@ -44,5 +48,6 @@
     <Folder Include="Contracts\UserProfile\Responses\" />
     <Folder Include="Contracts\Posts\Requests\" />
     <Folder Include="Contracts\Posts\Responses\" />
+    <Folder Include="MappingProfiles\" />
   </ItemGroup>
 </Project>

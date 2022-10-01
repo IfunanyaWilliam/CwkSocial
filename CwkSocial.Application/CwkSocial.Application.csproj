@@ -18,6 +18,7 @@
     <None Remove="Posts\CommandHandlers\" />
     <None Remove="Posts\Queries\" />
     <None Remove="Posts\QueryHandlers\" />
+    <None Remove="MappingProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
@@ -33,8 +34,10 @@
     <Folder Include="Posts\CommandHandlers\" />
     <Folder Include="Posts\Queries\" />
     <Folder Include="Posts\QueryHandlers\" />
+    <Folder Include="MappingProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cwk.Domain\Cwk.Domain.csproj" />
+    <ProjectReference Include="..\CwkSocail.Dal\CwkSocial.Dal.csproj" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System;
 namespace CwkSocial.Api.Contracts.UserProfile.Requests
 {
-    public record UserProfileCreate
+    public record UserProfileCreateUpdate
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
