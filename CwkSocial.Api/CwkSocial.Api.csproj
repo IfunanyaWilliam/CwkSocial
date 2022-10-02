@@ -39,6 +39,7 @@
     <None Remove="Contracts\Posts\Requests\" />
     <None Remove="Contracts\Posts\Responses\" />
     <None Remove="MappingProfiles\" />
+    <None Remove="Contracts\Common\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Contracts\" />
@@ -49,5 +50,6 @@
     <Folder Include="Contracts\Posts\Requests\" />
     <Folder Include="Contracts\Posts\Responses\" />
     <Folder Include="MappingProfiles\" />
+    <Folder Include="Contracts\Common\" />
   </ItemGroup>
 </Project>

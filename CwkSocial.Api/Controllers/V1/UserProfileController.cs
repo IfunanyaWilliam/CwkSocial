@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using CwkSocial.Api.Contracts.Common;
 using CwkSocial.Api.Contracts.UserProfile.Requests;
 using CwkSocial.Api.Contracts.UserProfile.Responses;
+using CwkSocial.Application.Enums;
+using CwkSocial.Application.Models;
 using CwkSocial.Application.UserProfiles.Commands;
 using CwkSocial.Application.UserProfiles.Queries;
 using MediatR;
@@ -11,7 +14,7 @@ namespace CwkSocial.Api.Controllers.V1
     [ApiVersion("1.0")]
     [Route(ApiRoutes.BaseRoute)]
     [ApiController]
-    public class UserProfileController : Controller
+    public class UserProfileController : BaseController
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -51,6 +54,10 @@ namespace CwkSocial.Api.Controllers.V1
         {
             var query       = new GetUserProfileById { UserProfileId = Guid.Parse(id) };
             var response    = await _mediator.Send(query);
+
+            if (response is null)
+                return NotFound($"No user with profile Id: {id} found");
+
             var userProfile = _mapper.Map<UserProfileResponse>(response);
 
             return Ok(userProfile);
@@ -63,9 +70,9 @@ namespace CwkSocial.Api.Controllers.V1
         {
             var command             = _mapper.Map<UpdateUserProfileBasicInfo>(updateProfile);
             command.UserProfileId   = Guid.Parse(id);
-            var responsse = await _mediator.Send(command);
+            var response = await _mediator.Send(command);
 
-            return NoContent();
+            return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
         }
 
 
