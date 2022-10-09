@@ -2,11 +2,13 @@
 using CwkSocial.Api.Contracts.Common;
 using CwkSocial.Api.Contracts.UserProfile.Requests;
 using CwkSocial.Api.Contracts.UserProfile.Responses;
+using CwkSocial.Api.Filters;
 using CwkSocial.Application.Enums;
 using CwkSocial.Application.Models;
 using CwkSocial.Application.UserProfiles.Commands;
 using CwkSocial.Application.UserProfiles.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 namespace CwkSocial.Api.Controllers.V1
 {
@@ -32,21 +34,23 @@ namespace CwkSocial.Api.Controllers.V1
         {
             var query       = new GetAllUserProfiles();
             var response    = await _mediator.Send(query);
-            var profiles    = _mapper.Map<List<UserProfileResponse>>(response);
+            var profiles    = _mapper.Map<List<UserProfileResponse>>(response.PayLoad);
 
             return Ok(profiles);
         }
 
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> CreateUserProfileCreate([FromBody] UserProfileCreateUpdate profile)
         {
             var command     = _mapper.Map<CreateUserCommand>(profile);
             var response    = await _mediator.Send(command);
-            var userProfile = _mapper.Map<UserProfileResponse>(response);
+            var userProfile = _mapper.Map<UserProfileResponse>(response.PayLoad);
 
-            return CreatedAtAction(nameof(GetUserProfileById), new { id = response.UserProfileId }, userProfile);
+            return CreatedAtAction(nameof(GetUserProfileById), new { id = userProfile.UserProfileId }, userProfile);
         }
+
 
         [Route(ApiRoutes.UserProfiles.IdRoute)]
         [HttpGet]
@@ -55,10 +59,10 @@ namespace CwkSocial.Api.Controllers.V1
             var query       = new GetUserProfileById { UserProfileId = Guid.Parse(id) };
             var response    = await _mediator.Send(query);
 
-            if (response is null)
-                return NotFound($"No user with profile Id: {id} found");
+            if (response.IsError)
+                return HandleErrorResponse(response.Errors);
 
-            var userProfile = _mapper.Map<UserProfileResponse>(response);
+            var userProfile = _mapper.Map<UserProfileResponse>(response.PayLoad);
 
             return Ok(userProfile);
         }
@@ -66,6 +70,7 @@ namespace CwkSocial.Api.Controllers.V1
 
         [Route(ApiRoutes.UserProfiles.IdRoute)]
         [HttpPatch]
+        [ValidateModel]
         public async Task<IActionResult> UpdateUserProfile(string id, UserProfileCreateUpdate updateProfile)
         {
             var command             = _mapper.Map<UpdateUserProfileBasicInfo>(updateProfile);
@@ -83,7 +88,7 @@ namespace CwkSocial.Api.Controllers.V1
             var command = new DeleteUserProfile { UserProfileId = Guid.Parse(id) };
             var response = await _mediator.Send(command);
 
-            return NoContent();
+            return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
         }
     }
 }
