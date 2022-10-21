@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Cwk.Domain.Exceptions;
 using Cwk.Domain.Validators.UserProfileValidators;
 
 namespace Cwk.Domain.Aggregates.UserProfileAggregate
@@ -20,22 +21,34 @@ namespace Cwk.Domain.Aggregates.UserProfileAggregate
         public DateTime DateOfBirth { get; private set; }
         public string? CurrentCity { get; private set; }
 
-        public static bool TryCreateBasicInfo(string firstName, string lastName, string emailAddress,
-                    string phone, DateTime dateOfBirth, string currentCity, out BasicInfo info)
+        public static BasicInfo CreateBasicInfo(string firstName, string lastName, string emailAddress,
+                    string phone, DateTime dateOfBirth, string currentCity)
         {
 
             var validator = new BasicInfoValidator();
-            info = new BasicInfo();
-            return true;
-            //return new BasicInfo
-            //{
-              //  FirstName    = firstName,
-              //  LastName     = lastName,
-              //  EmailAddress = emailAddress,
-              //  Phone        = phone,
-              //  DateOfBirth  = dateOfBirth,
-              //  CurrentCity = currentCity
-           // };
+            
+            var objToValidate = new BasicInfo
+            {
+                FirstName    = firstName,
+                LastName     = lastName,
+                EmailAddress = emailAddress,
+                Phone        = phone,
+                DateOfBirth  = dateOfBirth,
+                CurrentCity = currentCity
+            };
+
+            var validationResult = validator.Validate(objToValidate);
+
+            if (validationResult.IsValid)
+                return objToValidate;
+
+            var exception = new UserProfileNotValidException("The user profile is not");
+            foreach(var error in validationResult.Errors)
+            {
+                exception.ValidationErrors.Add(error.ErrorMessage);
+            }
+
+            throw exception;
         }
     }
 }

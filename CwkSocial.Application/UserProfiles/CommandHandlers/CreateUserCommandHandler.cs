@@ -1,6 +1,7 @@
 ﻿using System;
-using AutoMapper;
 using Cwk.Domain.Aggregates.UserProfileAggregate;
+using Cwk.Domain.Exceptions;
+using CwkSocial.Application.Enums;
 using CwkSocial.Application.Models;
 using CwkSocial.Application.UserProfiles.Commands;
 using CwkSocial.Dal;
@@ -11,30 +12,58 @@ namespace CwkSocial.Application.UserProfiles.CommandHandlers
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, OperationResult<UserProfile>>
     {
         private readonly DataContext _ctx;
-        private readonly IMapper _mapper;
 
-        public CreateUserCommandHandler(DataContext ctx,
-                                        IMapper mapper)
+        public CreateUserCommandHandler(DataContext ctx)
         {
             _ctx    = ctx;
-            _mapper = mapper;
         }
 
         public async Task<OperationResult<UserProfile>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<UserProfile>();
 
-            var basicInfo = BasicInfo.CreateBasicInfo(request.FirstName, request.LastName, request.EmailAddress, request.Phone,
+            try
+            {
+                var basicInfo = BasicInfo.CreateBasicInfo(request.FirstName, request.LastName, request.EmailAddress, request.Phone,
                                                       request.DateOfBirth, request.CurrentCity);
 
-            var userProfile = UserProfile.CreateUserProfile(Guid.NewGuid().ToString(), basicInfo);
+                var userProfile = UserProfile.CreateUserProfile(Guid.NewGuid().ToString(), basicInfo);
 
-            _ctx.UserProfiles.Add(userProfile);
-            await _ctx.SaveChangesAsync();
+                _ctx.UserProfiles.Add(userProfile);
+                await _ctx.SaveChangesAsync();
 
-            result.PayLoad = userProfile;
+                result.PayLoad = userProfile;
 
-            return result;
+                return result;
+            }
+
+            catch (UserProfileNotValidException ex)
+            {
+                result.IsError = true;
+                ex.ValidationErrors.ForEach(e =>
+                {
+                    var error = new Error
+                    {
+                        Code    = ErrorCode.ValidationError,
+                        Message = $"{ex.Message}"
+                    };
+
+                    result.Errors.Add(error);
+                });
+
+                return result;
+            }
+
+            catch(Exception e)
+            {
+                var error = new Error
+                {
+                    Code    = ErrorCode.UnknownError,
+                    Message = $"{e.Message}"
+                };
+
+                return result;
+            }
         }
     }
 

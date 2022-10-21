@@ -1,5 +1,6 @@
 ﻿using System;
 using Cwk.Domain.Aggregates.UserProfileAggregate;
+using Cwk.Domain.Exceptions;
 using CwkSocial.Application.Enums;
 using CwkSocial.Application.Models;
 using CwkSocial.Application.UserProfiles.Commands;
@@ -46,6 +47,24 @@ namespace CwkSocial.Application.UserProfiles.CommandHandlers
                 result.PayLoad = userProfile;
                 return result;
             }
+
+            catch (UserProfileNotValidException ex)
+            {
+                result.IsError = true;
+                ex.ValidationErrors.ForEach(e =>
+                {
+                    var error = new Error
+                    {
+                        Code = ErrorCode.ValidationError,
+                        Message = $"{ex.Message}"
+                    };
+
+                    result.Errors.Add(error);
+                });
+
+                return result;
+            }
+
             catch (Exception e)
             {
                 var error = new Error { Code = ErrorCode.ServerError, Message = e.Message };
