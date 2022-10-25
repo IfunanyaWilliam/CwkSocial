@@ -6,14 +6,14 @@ namespace CwkSocial.Api
         public const string BaseRoute = "api/v{version:apiVersion}/[controller]";
 
 
-        public class UserProfiles
+        public static class UserProfiles
         {
             public const string IdRoute = "{id}";
         }
 
-        public class Posts
+        public static class Posts
         {
-            public const string GetById = "{id}";
+            public const string IdRoute = "{id}";
         }
     }
 }

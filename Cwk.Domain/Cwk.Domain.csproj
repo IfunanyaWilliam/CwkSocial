@@ -11,11 +11,13 @@
     <None Remove="FluentValidation" />
     <None Remove="Validators\UserProfileValidators\" />
     <None Remove="Exceptions\" />
+    <None Remove="Validators\PostValidators\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Validators\" />
     <Folder Include="Validators\UserProfileValidators\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Validators\PostValidators\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.2.2" />

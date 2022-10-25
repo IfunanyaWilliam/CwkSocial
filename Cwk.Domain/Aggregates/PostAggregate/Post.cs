@@ -1,4 +1,6 @@
 ﻿using Cwk.Domain.Aggregates.UserProfileAggregate;
+using Cwk.Domain.Exceptions;
+using Cwk.Domain.Validators.PostValidators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,17 +29,41 @@ namespace Cwk.Domain.Aggregates.PostAggregate
 
         public static Post CreatePost(Guid userProfileId, string textContent)
         {
-            return new Post
+            var validator = new PostValidator();
+            var objectToValidate = new Post
             {
                 UserProfileId   = userProfileId,
                 TextContent     = textContent,
                 CreatedDate     = DateTime.Now,
                 LastModified    = DateTime.Now
             };
+
+            var validatorResult = validator.Validate(objectToValidate);
+            if (validatorResult.IsValid)
+                return objectToValidate;
+
+            var exception = new PostNotValidException("Post is not valid");
+
+            validatorResult.Errors.ForEach(vr => exception.ValidationErrors.Add(vr.ErrorMessage));
+
+            throw exception;
         }
 
+
+        /// <summary>
+        /// Updates the post text
+        /// </summary>
+        /// <param name="newText">The Updated post text</param>
         public void UpdatePostText(string newText)
         {
+            if (string.IsNullOrWhiteSpace(newText))
+            {
+                var exception = new PostNotValidException("Cannot update post. The text is invalid");
+
+                exception.ValidationErrors.Add("The provided text is either null or white space");
+                throw exception;
+            }
+
             TextContent   = newText;
             LastModified  = DateTime.Now;
         }
