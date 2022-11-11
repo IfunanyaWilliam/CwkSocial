@@ -14,13 +14,13 @@
     <None Remove="UserProfile\CommandHandlers\" />
     <None Remove="UserProfile\QueryHandlers\" />
     <None Remove="Posts\" />
-    <None Remove="Posts\Command\" />
     <None Remove="Posts\CommandHandlers\" />
     <None Remove="Posts\Queries\" />
     <None Remove="Posts\QueryHandlers\" />
     <None Remove="MappingProfiles\" />
     <None Remove="Models\" />
     <None Remove="Enums\" />
+    <None Remove="Posts\Commands\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
@@ -32,13 +32,13 @@
     <Folder Include="UserProfiles\CommandHandlers\" />
     <Folder Include="UserProfiles\QueryHandlers\" />
     <Folder Include="Posts\" />
-    <Folder Include="Posts\Command\" />
     <Folder Include="Posts\CommandHandlers\" />
     <Folder Include="Posts\Queries\" />
     <Folder Include="Posts\QueryHandlers\" />
     <Folder Include="MappingProfiles\" />
     <Folder Include="Models\" />
     <Folder Include="Enums\" />
+    <Folder Include="Posts\Commands\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cwk.Domain\Cwk.Domain.csproj" />

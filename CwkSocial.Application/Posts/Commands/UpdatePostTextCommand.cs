@@ -3,10 +3,12 @@ using Cwk.Domain.Aggregates.PostAggregate;
 using CwkSocial.Application.Models;
 using MediatR;
 
-namespace CwkSocial.Application.Posts.Queries
+namespace CwkSocial.Application.Posts.Commands
 {
-    public class GetPostById : IRequest<OperationResult<Post>>
+    public class UpdatePostTextCommand : IRequest<OperationResult<Post>>
     {
+        public string NewText { get; set; }
+
         public Guid PostId { get; set; }
     }
 }

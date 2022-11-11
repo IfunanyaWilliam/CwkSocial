@@ -27,6 +27,14 @@ namespace Cwk.Domain.Aggregates.PostAggregate
         public IEnumerable<PostComment>? Comments {  get { return _comments; }  }
         public IEnumerable<PostInteraction>? Interactions {  get { return _interactions; } }
 
+
+        /// <summary>
+        /// Create a new post instance
+        /// </summary>
+        /// <param name="userProfileId">User profile ID</param>
+        /// <param name="textContent">Post content</param>
+        /// <returns><see cref="Post"/></returns>
+        /// <exception cref="PostNotValidException"></exception>
         public static Post CreatePost(Guid userProfileId, string textContent)
         {
             var validator = new PostValidator();
@@ -54,6 +62,7 @@ namespace Cwk.Domain.Aggregates.PostAggregate
         /// Updates the post text
         /// </summary>
         /// <param name="newText">The Updated post text</param>
+        /// <exception cref="PostNotValidException"></exception>
         public void UpdatePostText(string newText)
         {
             if (string.IsNullOrWhiteSpace(newText))

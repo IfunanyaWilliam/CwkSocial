@@ -10,4 +10,3 @@ namespace Cwk.Domain.Exceptions
         internal UserProfileNotValidException(string message, Exception inner) : base(message, inner) { }
     }
 }
-
