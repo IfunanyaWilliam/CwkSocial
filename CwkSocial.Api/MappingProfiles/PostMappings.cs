@@ -10,6 +10,7 @@ namespace CwkSocial.Api.MappingProfiles
         public PostMappings()
         {
             CreateMap<Post, PostResponse>();
+            CreateMap<PostComment, PostCommentResponse>();
         }
     }
 }

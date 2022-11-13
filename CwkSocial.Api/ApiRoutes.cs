@@ -14,6 +14,10 @@ namespace CwkSocial.Api
         public static class Posts
         {
             public const string IdRoute = "{id}";
+
+            public const string PostComments = "{postId}/comments";
+
+            public const string CommentById = "{postId}/comments/{commentId}";
         }
     }
 }

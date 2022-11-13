@@ -5,11 +5,13 @@ using MediatR;
 
 namespace CwkSocial.Application.Posts.Commands
 {
-    public class CreatePostCommand : IRequest<OperationResult<Post>>
+    public class AddPostComment : IRequest<OperationResult<PostComment>>
     {
+        public Guid PostId { get; set; }
+
         public Guid UserProfileId { get; set; }
 
-        public string? TextContent { get; set; }
+        public string? CommentText { get; set; }
     }
 }
 
