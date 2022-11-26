@@ -21,6 +21,7 @@
     <None Remove="Models\" />
     <None Remove="Enums\" />
     <None Remove="Posts\Commands\" />
+    <None Remove="Options\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
@@ -39,6 +40,7 @@
     <Folder Include="Models\" />
     <Folder Include="Enums\" />
     <Folder Include="Posts\Commands\" />
+    <Folder Include="Options\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cwk.Domain\Cwk.Domain.csproj" />
