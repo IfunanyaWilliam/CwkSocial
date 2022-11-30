@@ -22,6 +22,8 @@
     <None Remove="Enums\" />
     <None Remove="Posts\Commands\" />
     <None Remove="Options\" />
+    <None Remove="Identity\" />
+    <None Remove="Identity\Commands\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
@@ -41,6 +43,9 @@
     <Folder Include="Enums\" />
     <Folder Include="Posts\Commands\" />
     <Folder Include="Options\" />
+    <Folder Include="Identity\" />
+    <Folder Include="Identity\Commands\" />
+    <Folder Include="Identity\Handlers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cwk.Domain\Cwk.Domain.csproj" />
