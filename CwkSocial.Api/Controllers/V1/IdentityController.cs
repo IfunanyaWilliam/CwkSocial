@@ -2,6 +2,7 @@
 using AutoMapper;
 using CwkSocial.Api.Contracts.Identity;
 using CwkSocial.Api.Filters;
+using CwkSocial.Application.Identity.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +28,15 @@ namespace CwkSocial.Api.Controllers.V1
         [ValidateModel]
         public async Task<IActionResult> Register(UserRegistration registration)
         {
-            return Ok();
+            var command = _mapper.Map<RegisterIdentity>(registration);
+            var result = await _mediator.Send(command);
+
+            if (result.IsError)
+                return HandleErrorResponse(result.Errors);
+
+            var authenticationResult = new AuthenticationResult() { Token = result.PayLoad };
+
+            return Ok(authenticationResult);
         }
 
     }
