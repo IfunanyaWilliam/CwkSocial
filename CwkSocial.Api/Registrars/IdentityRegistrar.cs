@@ -2,6 +2,7 @@
 using System.Text;
 using CwkSocial.Application.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CwkSocial.Api.Registrars
