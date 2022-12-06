@@ -56,7 +56,7 @@ namespace CwkSocial.Application.Identity.Handlers
                 };
 
 
-                // Creating transaction
+                //Creating transaction
                 using var transaction = _ctx.Database.BeginTransaction();
 
                 var createdIdentity = await _userManager.CreateAsync(identity, request.Password);
@@ -110,10 +110,10 @@ namespace CwkSocial.Application.Identity.Handlers
                         new Claim("IdentityId", identity.Id),
                         new Claim("UserProfileId", profile.UserProfileId.ToString())
                     }),
-                    Expires = DateTime.Now.AddHours(2),
-                    Audience = _jwtSettings.Audiences[0],
-                    Issuer = _jwtSettings.Issuer,
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    Expires             = DateTime.Now.AddHours(2),
+                    Audience            = _jwtSettings.Audiences[0],
+                    Issuer              = _jwtSettings.Issuer,
+                    SigningCredentials  = new SigningCredentials(new SymmetricSecurityKey(key),
                                 SecurityAlgorithms.HmacSha256Signature)
                 };
 

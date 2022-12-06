@@ -24,7 +24,7 @@ namespace CwkSocial.Api.Registrars
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             })
-                .AddEntityFrameworkStores<DataContext>();
+             .AddEntityFrameworkStores<DataContext>();
         }
     }
 }

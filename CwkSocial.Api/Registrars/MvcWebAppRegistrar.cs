@@ -22,6 +22,8 @@ namespace CwkSocial.Api.Registrars
 
             app.UseAuthorization();
 
+            app.UseAuthorization();
+
             app.MapControllers();
         }
     }
