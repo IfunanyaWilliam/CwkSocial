@@ -24,6 +24,7 @@
     <None Remove="Options\" />
     <None Remove="Identity\" />
     <None Remove="Identity\Commands\" />
+    <None Remove="Services\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
@@ -46,6 +47,7 @@
     <Folder Include="Identity\" />
     <Folder Include="Identity\Commands\" />
     <Folder Include="Identity\Handlers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cwk.Domain\Cwk.Domain.csproj" />

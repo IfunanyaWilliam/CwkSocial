@@ -51,7 +51,7 @@ namespace CwkSocial.Api.Controllers.V1
 
             var authenticationResult = new AuthenticationResult { Token = result.PayLoad };
 
-            return Ok();
+            return Ok(authenticationResult);
         }
 
     }
