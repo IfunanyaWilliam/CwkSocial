@@ -1,18 +1,17 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+using System.Security.Principal;
 using Cwk.Domain.Aggregates.UserProfileAggregate;
 using Cwk.Domain.Exceptions;
 using CwkSocial.Application.Enums;
 using CwkSocial.Application.Identity.Commands;
 using CwkSocial.Application.Models;
-using CwkSocial.Application.Options;
 using CwkSocial.Application.Services;
 using CwkSocial.Dal;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CwkSocial.Application.Identity.Handlers
@@ -37,69 +36,20 @@ namespace CwkSocial.Application.Identity.Handlers
             var result = new OperationResult<string>();
             try
             {
-                var existingIdentity = await _userManager.FindByEmailAsync(request.Username);
 
-                if(existingIdentity != null)
-                {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.IdentityUserAlreadyExists,
-                        Message = $"Email already exists. {request.Username} could not be registered."
-                    };
-                    result.Errors.Add(error);
 
-                    return result;
-                }
-
-                var identity = new IdentityUser
-                {
-                    Email       = request.Username,
-                    UserName    = request.Username
-                };
-
+                var creationValidated = await ValidateIdentityDoesNotExist(result, request);
+                if (!creationValidated) return result; 
 
                 //Creating transaction
-                using var transaction = _ctx.Database.BeginTransaction();
+                await using var transaction = _ctx.Database.BeginTransaction();
+                var identity = await CreateIdentityUserAsync(result, request, transaction);
+                if (identity == null) return result;
 
-                var createdIdentity = await _userManager.CreateAsync(identity, request.Password);
-                if (!createdIdentity.Succeeded)
-                {
-                    await transaction.RollbackAsync();
-                    result.IsError = true;
+                
+                var profile = await CreateUserProfiileAsync(result, request, transaction, identity);
 
-
-                    foreach (var identityError in createdIdentity.Errors)
-                    {
-                        var error = new Error
-                        {
-                            Code = ErrorCode.IdentityCreationFailed,
-                            Message = identityError.Description
-                        };
-
-                        result.Errors.Add(error);
-                    };
-
-                    return result;
-                }
-
-                var profileInfo = BasicInfo.CreateBasicInfo(request.FirstName, request.LastName,
-                                         request.Username, request.Phone, request.DateOfBirth, request.CurrentCity);
-
-                var profile = UserProfile.CreateUserProfile(identity.Id, profileInfo);
-
-                try
-                {
-                    _ctx.UserProfiles.Add(profile);
-                    await _ctx.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-
+                await transaction.CommitAsync();
 
                 var claimsIdentity = new ClaimsIdentity(new Claim[]
                 {
@@ -141,5 +91,80 @@ namespace CwkSocial.Application.Identity.Handlers
 
             return result;
         }
+
+        private async Task<bool> ValidateIdentityDoesNotExist(OperationResult<string> result, RegisterIdentity request)
+        {
+            var existingIdentity = await _userManager.FindByEmailAsync(request.Username);
+
+            if (existingIdentity != null)
+            {
+                result.IsError = true;
+                var error = new Error
+                {
+                    Code = ErrorCode.IdentityUserAlreadyExists,
+                    Message = $"Email already exists. {request.Username} could not be registered."
+                };
+                result.Errors.Add(error);
+
+                return false;
+            }
+            return true;
+        }
+
+        private async Task<IdentityUser> CreateIdentityUserAsync(OperationResult<string> result,
+                            RegisterIdentity request, IDbContextTransaction transaction)
+        {
+            var identity = new IdentityUser
+            {
+                Email = request.Username,
+                UserName = request.Username
+            };
+
+            var createdIdentity = await _userManager.CreateAsync(identity, request.Password);
+            if (!createdIdentity.Succeeded)
+            {
+                await transaction.RollbackAsync();
+                result.IsError = true;
+
+
+                foreach (var identityError in createdIdentity.Errors)
+                {
+                    var error = new Error
+                    {
+                        Code = ErrorCode.IdentityCreationFailed,
+                        Message = identityError.Description
+                    };
+
+                    result.Errors.Add(error);
+                };
+
+                return null;
+            }
+
+            return identity;
+        }
+
+
+        private async Task<UserProfile> CreateUserProfiileAsync(OperationResult<string> result,
+                            RegisterIdentity request, IDbContextTransaction transaction, IdentityUser identity)
+        {
+            
+            try
+            {
+                var profileInfo = BasicInfo.CreateBasicInfo(request.FirstName, request.LastName,
+                                         request.Username, request.Phone, request.DateOfBirth, request.CurrentCity);
+
+                var profile = UserProfile.CreateUserProfile(identity.Id, profileInfo);
+                _ctx.UserProfiles.Add(profile);
+                await _ctx.SaveChangesAsync();
+                return profile;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
     }
 }
