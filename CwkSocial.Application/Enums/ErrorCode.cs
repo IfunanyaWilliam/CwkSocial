@@ -14,6 +14,7 @@ namespace CwkSocial.Application.Enums
         IdentityCreationFailed      = 202,
         IdentityUserDoesNotExist    = 203,
         IncorrectPassword           = 204,
+        InexistentUserProfile       = 205,
 
         UnknownError                = 999
     }

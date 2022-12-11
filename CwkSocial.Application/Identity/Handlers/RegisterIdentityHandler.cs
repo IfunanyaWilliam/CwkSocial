@@ -36,8 +36,6 @@ namespace CwkSocial.Application.Identity.Handlers
             var result = new OperationResult<string>();
             try
             {
-
-
                 var creationValidated = await ValidateIdentityDoesNotExist(result, request);
                 if (!creationValidated) return result; 
 
@@ -46,22 +44,11 @@ namespace CwkSocial.Application.Identity.Handlers
                 var identity = await CreateIdentityUserAsync(result, request, transaction);
                 if (identity == null) return result;
 
-                
                 var profile = await CreateUserProfiileAsync(result, request, transaction, identity);
 
                 await transaction.CommitAsync();
 
-                var claimsIdentity = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, identity.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, identity.Email),
-                    new Claim("IdentityId", identity.Id),
-                    new Claim("UserProfileId", profile.UserProfileId.ToString())
-                });
-
-                var token = _identityService.CreateSecurityToken(claimsIdentity);
-                result.PayLoad = _identityService.WriteToken(token);
+                result.PayLoad = GetJwtStringToken(identity, profile);
                 return result;
             }
             catch(UserProfileNotValidException ex)
@@ -114,11 +101,7 @@ namespace CwkSocial.Application.Identity.Handlers
         private async Task<IdentityUser> CreateIdentityUserAsync(OperationResult<string> result,
                             RegisterIdentity request, IDbContextTransaction transaction)
         {
-            var identity = new IdentityUser
-            {
-                Email = request.Username,
-                UserName = request.Username
-            };
+            var identity = new IdentityUser { Email = request.Username, UserName = request.Username };
 
             var createdIdentity = await _userManager.CreateAsync(identity, request.Password);
             if (!createdIdentity.Succeeded)
@@ -164,6 +147,22 @@ namespace CwkSocial.Application.Identity.Handlers
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+
+
+        private string GetJwtStringToken(IdentityUser identity, UserProfile profile)
+        {
+            var claimsIdentity = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, identity.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Email, identity.Email),
+                    new Claim("IdentityId", identity.Id),
+                    new Claim("UserProfileId", profile.UserProfileId.ToString())
+                });
+
+            var token = _identityService.CreateSecurityToken(claimsIdentity);
+            return _identityService.WriteToken(token);
         }
 
     }
