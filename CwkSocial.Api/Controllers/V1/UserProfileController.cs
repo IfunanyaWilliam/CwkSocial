@@ -43,20 +43,6 @@ namespace CwkSocial.Api.Controllers.V1
         }
 
 
-        [HttpPost]
-        [ValidateModel]
-        public async Task<IActionResult> CreateUserProfileCreate([FromBody] UserProfileCreateUpdate profile)
-        {
-            var command     = _mapper.Map<CreateUserCommand>(profile);
-            var response    = await _mediator.Send(command);
-
-            var userProfile = _mapper.Map<UserProfileResponse>(response.PayLoad);
-
-            return response.IsError ? HandleErrorResponse(response.Errors) : CreatedAtAction(nameof(GetUserProfileById),
-                            new { id = userProfile.UserProfileId }, userProfile);
-        }
-
-
         [Route(ApiRoutes.UserProfiles.IdRoute)]
         [HttpGet]
         [ValidateGuid("id")]
@@ -87,7 +73,7 @@ namespace CwkSocial.Api.Controllers.V1
             return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
         }
 
-
+        
         [HttpDelete]
         [Route(ApiRoutes.UserProfiles.IdRoute)]
         [ValidateGuid("id")]
