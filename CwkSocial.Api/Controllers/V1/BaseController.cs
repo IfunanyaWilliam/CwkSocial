@@ -25,12 +25,12 @@ namespace CwkSocial.Api.Controllers.V1
             }
 
 
-            apiError.StatusCode = 500;
-            apiError.StatusPhrase = "Internal Server Error";
+            apiError.StatusCode = 400;
+            apiError.StatusPhrase = "Bad Request";
             apiError.TimeStamp = DateTime.Now;
-            apiError.Errors.Add("Unhandled Exception");
+            errors.ForEach(e => apiError.Errors.Add(e.Message));
 
-            return StatusCode(500, apiError);
+            return StatusCode(400, apiError);
             
         }
     }

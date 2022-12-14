@@ -100,7 +100,12 @@ namespace CwkSocial.Api.Controllers.V1
         [ValidateGuid("id")]
         public async Task<IActionResult> DeletePost(string id)
         {
-            var command = new DeletePostCommand() { PostId = Guid.Parse(id) };
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
+            var command = new DeletePostCommand()
+            {
+                PostId          = Guid.Parse(id),
+                UserProfileId   = userProfileId
+            };
             var result = await _mediator.Send(command);
 
             return result.IsError ? HandleErrorResponse(result.Errors) : NoContent();
