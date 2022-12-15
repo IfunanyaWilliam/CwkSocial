@@ -34,7 +34,7 @@ namespace CwkSocial.Application.Posts.CommandHandlers
                     var error = new Error
                     {
                         Code = ErrorCode.NotFound,
-                        Message = $"No Post with ID: {request.PostId} found"
+                        Message = $"No Post found with ID: {request.PostId}"
                     };
                     result.Errors.Add(error);
 

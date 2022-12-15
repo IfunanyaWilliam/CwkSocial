@@ -36,15 +36,15 @@ namespace CwkSocial.Application.Identity.Handlers
             var result = new OperationResult<string>();
             try
             {
-                var creationValidated = await ValidateIdentityDoesNotExist(result, request);
-                if (!creationValidated) return result; 
+                await ValidateIdentityDoesNotExist(result, request);
+                if (result.IsError) return result; 
 
                 //Creating transaction
-                await using var transaction = _ctx.Database.BeginTransaction();
+                await using var transaction = await _ctx.Database.BeginTransactionAsync();
                 var identity = await CreateIdentityUserAsync(result, request, transaction);
-                if (identity == null) return result;
+                if (result.IsError) return result;
 
-                var profile = await CreateUserProfiileAsync(result, request, transaction, identity);
+                var profile = await CreateUserProfiileAsync(result, request, transaction, identity, cancellationToken);
 
                 await transaction.CommitAsync();
 
@@ -53,49 +53,23 @@ namespace CwkSocial.Application.Identity.Handlers
             }
             catch(UserProfileNotValidException ex)
             {
-                result.IsError = true;
-                ex.ValidationErrors.ForEach(e =>
-                {
-                    var error = new Error
-                    {
-                        Code    = ErrorCode.ValidationError,
-                        Message = $"{ex.Message}"
-                    };
-                    result.Errors.Add(error);
-                });
+                ex.ValidationErrors.ForEach(e => result.AddError(ErrorCode.ValidationError, e));
             }
             catch(Exception e)
             {
-                var error = new Error
-                {
-                    Code    = ErrorCode.UnknownError,
-                    Message = $"{e.Message}"
-                };
-
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddError(ErrorCode.UnknownError, e.Message);
             }
 
             return result;
         }
 
-        private async Task<bool> ValidateIdentityDoesNotExist(OperationResult<string> result, RegisterIdentity request)
+        private async Task ValidateIdentityDoesNotExist(OperationResult<string> result, RegisterIdentity request)
         {
             var existingIdentity = await _userManager.FindByEmailAsync(request.Username);
 
             if (existingIdentity != null)
-            {
-                result.IsError = true;
-                var error = new Error
-                {
-                    Code = ErrorCode.IdentityUserAlreadyExists,
-                    Message = $"Email already exists. {request.Username} could not be registered."
-                };
-                result.Errors.Add(error);
+                result.AddError(ErrorCode.IdentityUserAlreadyExists, IdentityErrorMessage.IdentityUserAlreadyExists);
 
-                return false;
-            }
-            return true;
         }
 
         private async Task<IdentityUser> CreateIdentityUserAsync(OperationResult<string> result,
@@ -107,21 +81,11 @@ namespace CwkSocial.Application.Identity.Handlers
             if (!createdIdentity.Succeeded)
             {
                 await transaction.RollbackAsync();
-                result.IsError = true;
-
 
                 foreach (var identityError in createdIdentity.Errors)
                 {
-                    var error = new Error
-                    {
-                        Code = ErrorCode.IdentityCreationFailed,
-                        Message = identityError.Description
-                    };
-
-                    result.Errors.Add(error);
-                };
-
-                return null;
+                    result.AddError(ErrorCode.IdentityCreationFailed, identityError.Description);
+                }
             }
 
             return identity;
@@ -129,7 +93,7 @@ namespace CwkSocial.Application.Identity.Handlers
 
 
         private async Task<UserProfile> CreateUserProfiileAsync(OperationResult<string> result,
-                            RegisterIdentity request, IDbContextTransaction transaction, IdentityUser identity)
+                            RegisterIdentity request, IDbContextTransaction transaction, IdentityUser identity, CancellationToken cancellationToken)
         {
             
             try
@@ -139,12 +103,12 @@ namespace CwkSocial.Application.Identity.Handlers
 
                 var profile = UserProfile.CreateUserProfile(identity.Id, profileInfo);
                 _ctx.UserProfiles.Add(profile);
-                await _ctx.SaveChangesAsync();
+                await _ctx.SaveChangesAsync(cancellationToken);
                 return profile;
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 throw;
             }
         }
