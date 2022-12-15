@@ -24,7 +24,7 @@ namespace CwkSocial.Application.Posts.CommandHandlers
 
             try
             {
-                var post = await _ctx.Posts.FirstOrDefaultAsync(p => p.PostId == request.PostId);
+                var post = await _ctx.Posts.FirstOrDefaultAsync(p => p.PostId == request.PostId, cancellationToken);
 
                 if (post is null)
                 {

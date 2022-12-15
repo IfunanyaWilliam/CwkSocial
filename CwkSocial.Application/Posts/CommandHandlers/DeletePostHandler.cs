@@ -25,31 +25,19 @@ namespace CwkSocial.Application.Posts.CommandHandlers
 
             try
             {
-                var post = await _ctx.Posts.FirstOrDefaultAsync(p => p.PostId == request.PostId);
+                var post = await _ctx.Posts.FirstOrDefaultAsync(p => p.PostId == request.PostId, cancellationToken);
 
                 if (post is null)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.NotFound,
-                        Message = $"No Post with ID: {request.PostId} found"
-                    };
-                    result.Errors.Add(error);
-
+                    result.AddError(ErrorCode.NotFound,
+                                    string.Format(PostErrorMessages.PostNotFound, request.PostId));
                     return result;
                 }
 
+                //Check that the UserProfileId of the user who wants to delete post matches the userProfileId of post owner
                 if(post.UserProfileId != request.UserProfileId)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.PostDeletNotPossible,
-                        Message = $"Only the owner of a post can delete it"
-                    };
-                    result.Errors.Add(error);
-
+                    result.AddError(ErrorCode.PostDeletNotPossible, PostErrorMessages.PostDeleteNotPossible);
                     return result;
                 }
 
@@ -61,14 +49,7 @@ namespace CwkSocial.Application.Posts.CommandHandlers
 
             catch(Exception e)
             {
-                var error = new Error
-                {
-                    Code = ErrorCode.UnknownError,
-                    Message = $"{e.Message}"
-                };
-
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddError(ErrorCode.UnknownError, e.Message);
             }
 
             return result;
