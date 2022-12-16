@@ -25,7 +25,7 @@ namespace CwkSocial.Application.Posts.CommandHandlers
             {
                 var post = Post.CreatePost(request.UserProfileId, request.TextContent);
                 _ctx.Posts.Add(post);
-                _ctx.SaveChangesAsync();
+                _ctx.SaveChangesAsync(cancellationToken);
 
                 result.PayLoad = post;
             }
@@ -36,7 +36,7 @@ namespace CwkSocial.Application.Posts.CommandHandlers
 
             catch(Exception e)
             {
-                result.AddError(ErrorCode.UnknownError, e.Message);
+                result.AddUnknownError(e.Message);
             }
 
             return result;

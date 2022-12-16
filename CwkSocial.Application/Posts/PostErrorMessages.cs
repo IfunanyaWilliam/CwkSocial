@@ -6,6 +6,9 @@ namespace CwkSocial.Application.Posts
         public const string PostNotFound = "No post found with ID {0}";
 
         public const string PostDeleteNotPossible = "Only the owner of a post can delete it";
+
+        public const string PostUpdateNotPossible = "Only the owner of a post can update it";
     }
 }
+
 

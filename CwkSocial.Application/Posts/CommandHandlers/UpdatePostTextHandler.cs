@@ -24,66 +24,34 @@ namespace CwkSocial.Application.Posts.CommandHandlers
 
             try
             {
-                var post = await _ctx.Posts.FirstOrDefaultAsync(p => p.PostId == request.PostId, cancellationToken);
+                var post = await _ctx.Posts.FirstOrDefaultAsync(p => p.PostId == request.PostId);
 
                 if (post is null)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.NotFound,
-                        Message = $"No Post with ID: {request.PostId} found"
-                    };
-                    result.Errors.Add(error);
-
+                    result.AddError(ErrorCode.NotFound, string.Format(PostErrorMessages.PostNotFound));
                     return result;
                 }
 
                 if(post.UserProfileId != request.UserProfileId)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.PostUpdateNotPossible,
-                        Message = $"Post update not possible. Only the owner can edit post."
-                    };
-                    result.Errors.Add(error);
-
+                    result.AddError(ErrorCode.PostUpdateNotPossible, PostErrorMessages.PostUpdateNotPossible);
                     return result;
                 }
 
                 post.UpdatePostText(request.NewText);
-
-                await _ctx.SaveChangesAsync();
+                await _ctx.SaveChangesAsync(cancellationToken);
                 result.PayLoad = post;
 
                 return result;
             }
             catch (PostNotValidException e)
             {
-                result.IsError = true;
-                e.ValidationErrors.ForEach(er =>
-                {
-                    var error = new Error
-                    {
-                        Code = ErrorCode.ValidationError,
-                        Message = $"{e.Message}"
-                    };
-
-                    result.Errors.Add(error);
-                });
+                e.ValidationErrors.ForEach(er => result.AddError(ErrorCode.ValidationError, er));
             }
 
             catch (Exception e)
             {
-                var error = new Error
-                {
-                    Code = ErrorCode.UnknownError,
-                    Message = $"{e.Message}"
-                };
-
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknownError(e.Message);
             }
 
             return result;

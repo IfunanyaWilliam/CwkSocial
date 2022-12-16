@@ -49,7 +49,7 @@ namespace CwkSocial.Application.Identity.Handlers
             }
             catch (Exception e)
             {
-                result.AddError(ErrorCode.UnknownError, e.Message);
+                result.AddUnknownError(e.Message);
             }
 
             return result;

@@ -26,14 +26,7 @@ namespace CwkSocial.Application.Posts.QueryHandlers
 
             if (post is null)
             {
-                result.IsError = true;
-                var error = new Error
-                {
-                    Code = ErrorCode.NotFound,
-                    Message = $"No Post with ID: {request.PostId} found"
-                };
-                result.Errors.Add(error);
-
+                result.AddError(ErrorCode.NotFound, String.Format(PostErrorMessages.PostNotFound, request.PostId));
                 return result;
             }
 

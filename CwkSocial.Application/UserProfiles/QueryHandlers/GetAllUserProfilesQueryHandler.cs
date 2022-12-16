@@ -21,7 +21,7 @@ namespace CwkSocial.Application.UserProfiles.QueryHandlers
                                                          CancellationToken cancellationToken)
         {
             var result = new OperationResult<IEnumerable<UserProfile>>();
-            result.PayLoad = await _ctx.UserProfiles.ToListAsync();
+            result.PayLoad = await _ctx.UserProfiles.ToListAsync(cancellationToken);
             return result;
         }
     }

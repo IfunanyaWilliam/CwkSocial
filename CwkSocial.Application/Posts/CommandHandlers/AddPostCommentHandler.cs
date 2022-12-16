@@ -26,7 +26,7 @@ namespace CwkSocial.Application.Posts.CommandHandlers
 
             try
             {
-                var post = await _ctx.Posts.FirstOrDefaultAsync(p => p.PostId == request.PostId, cancellationToken);
+                var post = await _ctx.Posts.FirstOrDefaultAsync(p => p.PostId == request.PostId);
 
                 if (post is null)
                 {
@@ -40,7 +40,7 @@ namespace CwkSocial.Application.Posts.CommandHandlers
                 post.AddPostComment(comment);
 
                 _ctx.Posts.Update(post);
-                await _ctx.SaveChangesAsync();
+                await _ctx.SaveChangesAsync(cancellationToken);
 
                 result.PayLoad = comment;
 
@@ -52,7 +52,7 @@ namespace CwkSocial.Application.Posts.CommandHandlers
 
             catch (Exception e)
             {
-                result.AddError(ErrorCode.UnknownError, e.Message);
+                result.AddUnknownError(e.Message);
             }
 
             return result;
