@@ -165,5 +165,14 @@ namespace CwkSocial.Api.Controllers.V1
 
             return Ok(newComment);
         }
+
+
+        [HttpGet]
+        [Route(ApiRoutes.Posts.PostInteractions)]
+        [ValidateGuid("postId")]
+        public async Task<IActionResult> GetPostInteractions(string postId)
+        {
+            var postGuid = Guid.Parse(postId);
+        }
     }
 }

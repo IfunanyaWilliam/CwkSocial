@@ -18,6 +18,13 @@ namespace CwkSocial.Api
             public const string PostComments = "{postId}/comments";
 
             public const string CommentById = "{postId}/comments/{commentId}";
+
+            public const string AddInteraction = "{postId}/interactions";
+
+            public const string InteractionById = "{postId}/interactions/{interactionId}";
+
+            public const string PostInteractions = "{postId}/interactions";
+
         }
 
 
