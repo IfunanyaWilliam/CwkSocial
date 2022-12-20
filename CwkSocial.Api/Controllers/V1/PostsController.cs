@@ -170,9 +170,16 @@ namespace CwkSocial.Api.Controllers.V1
         [HttpGet]
         [Route(ApiRoutes.Posts.PostInteractions)]
         [ValidateGuid("postId")]
-        public async Task<IActionResult> GetPostInteractions(string postId)
+        public async Task<IActionResult> GetPostInteractions(string postId, CancellationToken token)
         {
             var postGuid = Guid.Parse(postId);
+            var query = new GetPostInteractions() { PostId = postGuid };
+            var result = await _mediator.Send(query, token);
+
+            if (result.IsError) HandleErrorResponse(result.Errors);
+
+            var mapped = _mapper.Map<List<PostInteractionResponse>>(result.PayLoad);
+            return Ok(mapped);
         }
     }
 }

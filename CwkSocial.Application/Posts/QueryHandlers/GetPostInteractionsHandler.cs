@@ -1,9 +1,11 @@
 ﻿using System;
 using Cwk.Domain.Aggregates.PostAggregate;
+using CwkSocial.Application.Enums;
 using CwkSocial.Application.Models;
 using CwkSocial.Application.Posts.Queries;
 using CwkSocial.Dal;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CwkSocial.Application.Posts.QueryHandlers
 {
@@ -16,9 +18,31 @@ namespace CwkSocial.Application.Posts.QueryHandlers
             _ctx = ctx;
         }
 
-        public Task<OperationResult<List<PostInteraction>>> Handle(GetPostInteractions request, CancellationToken cancellationToken)
+        public async Task<OperationResult<List<PostInteraction>>> Handle(GetPostInteractions request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var result = new OperationResult<List<PostInteraction>>();
+
+            try
+            {
+                var post = await _ctx.Posts
+                                     .Include(p => p.Interactions)
+                                     .FirstOrDefaultAsync(p => p.PostId == request.PostId, cancellationToken);
+
+
+                if (post == null)
+                {
+                    result.AddError(ErrorCode.NotFound, PostErrorMessages.PostNotFound);
+                    return result;
+                }
+
+                result.PayLoad = post.Interactions.ToList();
+            }
+            catch (Exception ex)
+            {
+                result.AddUnknownError(ex.Message);
+            }
+
+            return result;
         }
     }
 }
