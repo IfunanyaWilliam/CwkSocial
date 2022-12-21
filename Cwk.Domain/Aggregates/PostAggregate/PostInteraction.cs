@@ -19,7 +19,7 @@ namespace Cwk.Domain.Aggregates.PostAggregate
         public UserProfile UserProfile { get; private set; }
         public InteractionType InteractionType { get; private set; }    
 
-        public static PostInteraction CreatePostInteraction(Guid postId, InteractionType type)
+        public static PostInteraction CreatePostInteraction(Guid postId, Guid userProfileId, InteractionType type)
         {
             return new PostInteraction
             {
