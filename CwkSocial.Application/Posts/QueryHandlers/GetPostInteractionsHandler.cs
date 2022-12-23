@@ -26,6 +26,7 @@ namespace CwkSocial.Application.Posts.QueryHandlers
             {
                 var post = await _ctx.Posts
                                      .Include(p => p.Interactions)
+                                     .ThenInclude(u => u.UserProfile)
                                      .FirstOrDefaultAsync(p => p.PostId == request.PostId, cancellationToken);
 
 

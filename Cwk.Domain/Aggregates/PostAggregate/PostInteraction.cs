@@ -23,8 +23,9 @@ namespace Cwk.Domain.Aggregates.PostAggregate
         {
             return new PostInteraction
             {
-                InteractionId = postId,
-                InteractionType = type
+                InteractionId    = postId,
+                UserProfileId    = userProfileId,
+                InteractionType  = type
             };
         }
 
