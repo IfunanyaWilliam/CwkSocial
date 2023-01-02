@@ -25,23 +25,26 @@ namespace CwkSocial.Api.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            _keys.ForEach(k =>
+            bool hasError = false;
+            var apiError = new ErrorResponse();
+            _keys.ForEach(key =>
             {
-
+                if (!context.ActionArguments.TryGetValue(key, out var value)) return;
+                if (!Guid.TryParse(value?.ToString(), out var guid))
+                {
+                    hasError = true;
+                    apiError.Errors.Add($"The identifier for {key} is not a correct GUID format");
+                }
+                
             });
 
-            if (!context.ActionArguments.TryGetValue(_key, out var value)) return;
-            if (Guid.TryParse(value?.ToString(), out var guid)) return;
-
-            var apiError = new ErrorResponse
+            if (hasError)
             {
-                StatusCode = 400,
-                StatusPhrase = "Bad Request",
-                TimeStamp = DateTime.Now
-            };
-
-            apiError.Errors.Add($"The identifier for {_key} is not a correct GUID format");
-            context.Result = new ObjectResult(apiError);
+                apiError.StatusCode = 400;
+                apiError.StatusPhrase = "Bad Request";
+                apiError.TimeStamp = DateTime.Now;
+                context.Result = new ObjectResult(apiError);
+            }
         }
     }
 }

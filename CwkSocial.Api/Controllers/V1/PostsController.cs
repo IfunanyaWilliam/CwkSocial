@@ -206,5 +206,18 @@ namespace CwkSocial.Api.Controllers.V1
             var mapped = _mapper.Map<PostInteractionResponse>(result.PayLoad);
             return Ok(mapped);
         }
+
+
+        [HttpDelete]
+        [Route(ApiRoutes.Posts.InteractionById)]
+        [ValidateGuid("postId", "interactionId")]
+        public async Task<IActionResult> RemovePostInteraction(string postId, string interactionId,
+                                CancellationToken token)
+        {
+            var postGuid        = Guid.Parse(postId);
+            var interactionGuid = Guid.Parse(interactionId);
+            var userProfileGuid = HttpContext.GetUserProfileIdClaimValue();
+            return Ok();
+        }
     }
 }
