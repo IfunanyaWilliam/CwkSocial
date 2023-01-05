@@ -17,8 +17,9 @@ namespace CwkSocial.Application.Enums
 
 
         //Application Error
-        PostUpdateNotPossible       = 300,
-        PostDeletNotPossible        = 301,
+        PostUpdateNotPossible           = 300,
+        PostDeletNotPossible            = 301,
+        InteractionRemovalNotAuthorized = 302,
 
 
         UnknownError                = 999

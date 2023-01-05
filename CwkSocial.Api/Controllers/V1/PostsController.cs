@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
+using Cwk.Domain.Aggregates.PostAggregate;
 using CwkSocial.Api.Contracts.Common;
 using CwkSocial.Api.Contracts.Posts.Requests;
 using CwkSocial.Api.Contracts.Posts.Responses;
@@ -217,7 +218,19 @@ namespace CwkSocial.Api.Controllers.V1
             var postGuid        = Guid.Parse(postId);
             var interactionGuid = Guid.Parse(interactionId);
             var userProfileGuid = HttpContext.GetUserProfileIdClaimValue();
-            return Ok();
+            var command = new RemovePostInteraction
+            {
+                PostId = postGuid,
+                UserProfileId = userProfileGuid,
+                InteractionId = interactionGuid
+            };
+
+            var result = await _mediator.Send(command, token);
+            if(result.IsError) HandleErrorResponse(result.Errors);
+
+            var mapped = _mapper.Map<PostInteraction>(result.PayLoad);
+
+            return Ok(mapped);
         }
     }
 }
