@@ -226,7 +226,7 @@ namespace CwkSocial.Api.Controllers.V1
             };
 
             var result = await _mediator.Send(command, token);
-            if(result.IsError) HandleErrorResponse(result.Errors);
+            if(result.IsError) return HandleErrorResponse(result.Errors);
 
             var mapped = _mapper.Map<PostInteraction>(result.PayLoad);
 
