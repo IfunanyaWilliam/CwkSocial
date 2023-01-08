@@ -10,16 +10,18 @@ namespace CwkSocial.Application.Enums
         ValidationError             = 101,
 
         //Infrastructure errors
-        IdentityUserAlreadyExists   = 201,
         IdentityCreationFailed      = 202,
-        IdentityUserDoesNotExist    = 203,
-        IncorrectPassword           = 204,
+        
 
 
         //Application Error
         PostUpdateNotPossible           = 300,
         PostDeletNotPossible            = 301,
         InteractionRemovalNotAuthorized = 302,
+        IdentityUserAlreadyExists       = 303,
+        IdentityUserDoesNotExist        = 304,
+        IncorrectPassword               = 305,
+        UnAuthorizedAccountRemoval      = 306,
 
 
         UnknownError                = 999

@@ -35,8 +35,6 @@
     <Folder Include="UserProfiles\Queries\" />
     <Folder Include="UserProfiles\CommandHandlers\" />
     <Folder Include="UserProfiles\QueryHandlers\" />
-    <Folder Include="Posts\" />
-    <Folder Include="Posts\CommandHandlers\" />
     <Folder Include="Posts\Queries\" />
     <Folder Include="Posts\QueryHandlers\" />
     <Folder Include="MappingProfiles\" />
@@ -44,9 +42,6 @@
     <Folder Include="Enums\" />
     <Folder Include="Posts\Commands\" />
     <Folder Include="Options\" />
-    <Folder Include="Identity\" />
-    <Folder Include="Identity\Commands\" />
-    <Folder Include="Identity\Handlers\" />
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
