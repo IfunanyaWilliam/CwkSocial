@@ -73,17 +73,6 @@ namespace CwkSocial.Api.Controllers.V1
             return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
         }
 
-        
-        [HttpDelete]
-        [Route(ApiRoutes.UserProfiles.IdRoute)]
-        [ValidateGuid("id")]
-        public async Task<IActionResult> DeleteUserProfile(string id)
-        {
-            var command = new DeleteUserProfile { UserProfileId = Guid.Parse(id) };
-            var response = await _mediator.Send(command);
-
-            return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
-        }
     }
 }
 

@@ -168,6 +168,15 @@ namespace CwkSocial.Api.Controllers.V1
         }
 
 
+        //[HttpDelete]
+        //[Route(ApiRoutes.Posts.CommentById)]
+        //[ValidateGuid()]
+        //public async Task<IActionResult> RemoveCommentFromPost()
+        //{
+
+        //}
+
+
         [HttpGet]
         [Route(ApiRoutes.Posts.PostInteractions)]
         [ValidateGuid("postId")]

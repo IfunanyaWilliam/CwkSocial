@@ -11,7 +11,7 @@ namespace Cwk.Domain.Aggregates.PostAggregate
     {
         private PostInteraction()
         {
-        }
+        } 
 
         public Guid InteractionId { get; private set; }
         public Guid PostId { get; private set; }
@@ -23,7 +23,7 @@ namespace Cwk.Domain.Aggregates.PostAggregate
         {
             return new PostInteraction
             {
-                InteractionId    = postId,
+                PostId    = postId,
                 UserProfileId    = userProfileId,
                 InteractionType  = type
             };

@@ -21,7 +21,7 @@ namespace CwkSocial.Application.Identity.Handlers
         public async Task<OperationResult<bool>> Handle(RemoveAccount request, 
                             CancellationToken cancellationToken)
         {
-            var result = new OperationResult<bool>;
+            var result = new OperationResult<bool>();
 
             try
             {
